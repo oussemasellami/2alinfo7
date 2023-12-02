@@ -1,0 +1,30 @@
+<html>
+    <head>
+<script src="/socket.io/socket.io.js"></script>
+    </head>
+    <body>
+      <label>Msg :</label><input type="text" id="ch"><input type="submit" onclick="send()">
+        <script>
+            const socket=io.connect();
+            u=prompt("your name:")
+            socket.on("msg",(data)=>{
+                p=document.createElement("p")
+                p.innerText=(data)
+                document.body.append(p)
+
+            })
+            socket.on("msg1",(data)=>{
+                p=document.createElement("p")
+                p.innerText=(data.name+":"+data.object)
+                document.body.append(p)
+
+            })
+            
+x=document.getElementById("ch")
+function send(){
+    socket.emit("msg1",{object:x.value,name:u})
+}
+        </script>
+        
+    </body>
+</html>

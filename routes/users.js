@@ -31,4 +31,8 @@ router.delete("/delete/:id", async function (req, res, next) {
   }
 });
 
+router.get("/chat", (req, res, next) => {
+  res.render("chat");
+});
+
 module.exports = router;

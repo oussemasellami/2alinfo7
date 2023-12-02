@@ -10,7 +10,7 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var osrouter = require("./routes/os");
 var productrouter = require("./routes/products");
-
+var { add } = require("./controller/chatcontroller");
 mongo
   .connect(connectiondb.url, {
     useNewUrlParser: true,
@@ -53,6 +53,22 @@ app.use(function (err, req, res, next) {
 });
 
 const server = http.createServer(app);
+const io = require("socket.io")(server);
+io.on("connection", (socket) => {
+  console.log("user connected");
+  socket.emit("msg", "user is connected");
+
+  socket.on("msg1", (data) => {
+    add(data.object);
+    console.log("data:" + data.object, data.name);
+    io.emit("msg1", data);
+  });
+
+  socket.on("disconnect", () => {
+    io.emit("msg", "user is disconnect");
+  });
+});
+
 server.listen(3000, console.log("server run"));
 
 module.exports = app;
