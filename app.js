@@ -4,10 +4,20 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var http = require("http");
+var mongo = require("mongoose");
+var connectiondb = require("./config/dbconnection.json");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var osrouter = require("./routes/os");
 var productrouter = require("./routes/products");
+
+mongo
+  .connect(connectiondb.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("database connect"))
+  .catch(() => console.log("not connected"));
 
 var app = express();
 
