@@ -10,7 +10,12 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var osrouter = require("./routes/os");
 var productrouter = require("./routes/products");
+var joueurrouter = require("./routes/joueur");
 var { add } = require("./controller/chatcontroller");
+var {
+  addpartiesocket,
+  affichesocket,
+} = require("./controller/joueurcontroller");
 mongo
   .connect(connectiondb.url, {
     useNewUrlParser: true,
@@ -35,6 +40,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/os", osrouter);
 app.use("/product", productrouter);
+app.use("/joueur", joueurrouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -57,6 +63,18 @@ const io = require("socket.io")(server);
 io.on("connection", (socket) => {
   console.log("user connected");
   socket.emit("msg", "user is connected");
+
+  socket.on("partie", (data) => {
+    addpartiesocket(data);
+    // console.log("data:" + data.object, data.name);
+    io.emit("partie", data);
+  });
+
+  socket.on("aff", async (data) => {
+    const r = await affichesocket(data);
+    // console.log("data:" + data.object, data.name);
+    io.emit("aff", r);
+  });
 
   socket.on("msg1", (data) => {
     add(data.object);
